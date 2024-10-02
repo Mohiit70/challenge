@@ -11,9 +11,7 @@ export async function analyzeDocument(file: File): Promise<string> {
 }
 
 export async function generateQuestion(topic: string): Promise<string> {
-  const completion = await groq.chat.complet
-
-ions.create({
+  const completion = await groq.chat.completions.create({
     messages: [{ role: 'user', content: `Generate a challenging question about ${topic}` }],
     model: 'mixtral-8x7b-32768',
   });
@@ -28,4 +26,22 @@ export async function getAIResponse(input: string): Promise<string> {
   });
 
   return completion.choices[0]?.message?.content || 'I apologize, I\'m having trouble responding right now.';
+}
+
+export async function predictExam(): Promise<string> {
+  const completion = await groq.chat.completions.create({
+    messages: [{ role: 'user', content: 'Predict likely exam questions based on current trends and historical patterns.' }],
+    model: 'mixtral-8x7b-32768',
+  });
+
+  return completion.choices[0]?.message?.content || 'Unable to predict exam questions at this time.';
+}
+
+export async function generateStudyPlan(userData: any): Promise<string> {
+  const completion = await groq.chat.completions.create({
+    messages: [{ role: 'user', content: `Generate a personalized study plan based on the following user data: ${JSON.stringify(userData)}` }],
+    model: 'mixtral-8x7b-32768',
+  });
+
+  return completion.choices[0]?.message?.content || 'Unable to generate a study plan at this time.';
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Footer: React.FC = () => {
+export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
       <div className="container mx-auto px-4">
@@ -29,11 +29,9 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
-          © 2024 ExamSage. All rights reserved.
+          © {new Date().getFullYear()} ExamSage. All rights reserved.
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

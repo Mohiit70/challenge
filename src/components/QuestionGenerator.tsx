@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
-import { useCopilotChat } from '@copilotkit/react-core';
-import { Send } from 'lucide-react';
+"use client"
 
-const QuestionGenerator: React.FC = () => {
+import React, { useState } from 'react';
+import { Send } from 'lucide-react';
+import { generateQuestionAction } from '@/utils/copilotActions';
+
+export default function QuestionGenerator() {
   const [topic, setTopic] = useState('');
-  const { messages, sendMessage } = useCopilotChat();
+  const [question, setQuestion] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateQuestionAction = async () => {
     if (topic) {
       setIsGenerating(true);
       try {
-        const response = await fetch('/api/generateQuestion', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic }),
-        });
-        const question = await response.text();
-        await sendMessage(`Generated question about ${topic}: ${question}`);
+        const generatedQuestion = await generateQuestionAction(topic);
+        setQuestion(generatedQuestion);
       } catch (error) {
         console.error('Error generating question:', error);
-        await sendMessage('Sorry, there was an error generating the question.');
+        setQuestion('Sorry, there was an error generating the question.');
       } finally {
         setIsGenerating(false);
       }
@@ -48,16 +45,11 @@ const QuestionGenerator: React.FC = () => {
           {isGenerating ? 'Generating...' : <>Generate <Send className="ml-2 h-4 w-4" /></>}
         </button>
       </div>
-      <div className="bg-gray-50 rounded-md p-4 h-64 overflow-y-auto">
-        {messages.map((msg, index) => (
-          <div key={index} className={`mb-2 ${msg.role === 'user' ? 'text-indigo-600' : 'text-gray-700'}`}>
-            <span className="font-semibold">{msg.role === 'user' ? 'You: ' : 'AI: '}</span>
-            {msg.content}
-          </div>
-        ))}
-      </div>
+      {question && (
+        <div className="bg-gray-50 rounded-md p-4 mt-4">
+          <p className="text-gray-700">{question}</p>
+        </div>
+      )}
     </div>
   );
-};
-
-export default QuestionGenerator;
+}
